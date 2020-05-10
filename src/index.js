@@ -2,145 +2,156 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function Square(props) {
-  return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-}
+class NameForm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: null }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
 
-class Board extends React.Component {
-  renderSquare(i) {
-    return <Square
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)}
-    />;
+  handleChange(event) {
+    this.setState({ value: event.target.value })
+  }
+
+  handleSubmit(event) {
+    alert('提交的名字：' + this.state.value)
+    event.preventDefault()
   }
 
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+    return <form onSubmit={this.handleSubmit}>
+      <label>
+        名字：
+        <input type="text" value={ this.state.value } onChange={this.handleChange}/>
+      </label>
+      <input type="submit" value="提交"/>
+    </form>
   }
 }
 
-class Game extends React.Component {
+class EssayForm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: "请撰写一篇关于你喜欢DOM元素的文章。" }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value })
+  }
+
+  handleSubmit(event) {
+    alert("提交的文章：" + this.state.value)
+    event.preventDefault()
+  }
+
+  render() {
+    return <form onSubmit={this.handleSubmit}>
+      <label>
+        文章：
+        <textarea value={this.state.value} onChange={this.handleChange}/>
+      </label>
+      <input type="submit" value="提交"/>
+    </form>
+  }
+}
+
+class FlavorForm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: "cocount" }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value })
+  }
+
+  handleSubmit(event) {
+    alert("喜欢的风味：" + this.state.value)
+    event.preventDefault()
+  }
+
+  render() {
+    return <form onSubmit={this.handleSubmit}>
+      <label>
+        选择你喜欢的风味：
+        <select value={this.state.value} onChange={this.handleChange}>
+          <option value="grapefruit">葡萄柚</option>
+          <option value="lime">酸橙</option>
+          <option value="cocount">椰子</option>
+          <option value="mango">芒果</option>
+        </select>
+      </label>
+      <input type="submit" value="提交"/>
+    </form>
+  }
+}
+
+class Reservation extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      history: [{
-        squares: Array(9).fill(null),
-      }],
-      xIsNext: true,
-      stepNumber: 0,
+      isGoing: true,
+      numberOfGuests: 2,
     }
+
+    this.handleInputChange = this.handleInputChange.bind(this)
   }
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const current = history[history.length - 1]
-    const squares = current.squares.slice()
-    if (calculateWinner(squares) || squares[i]) return
-    squares[i] = this.state.xIsNext ? 'X' : 'O'
-    this.setState({
-      history: history.concat([{
-        squares: squares,
-      }]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-    })
-  }
+  handleInputChange(event) {
+    const target = event.target
+    const value = target.name === "isGoing" ? target.checked : target.value
+    const name = target.name
 
-  jumpTo(step) {
     this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
+      [name]: value,
     })
   }
 
   render() {
-    const history = this.state.history
-    const current = history[this.state.stepNumber]
-    const winner = calculateWinner(current.squares)
-
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        "Go to move #" + move :
-        "Go to game start"
-
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    })
-
-    let status
-    if (winner) {
-      status = "Winner: " + winner
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board 
-          squares={current.squares}
-          onClick={(i) => this.handleClick(i)}
+    return <form>
+      <label>
+        参与：
+        <input
+        name="isGoing"
+        type="checkbox"
+        checked={this.state.isGoing}
+        onChange={this.handleInputChange}
         />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
-      </div>
-    );
+      </label>
+      <br />
+      <label>
+        来宾人数：
+        <input
+        name="numberOfGuests"
+        type="number"
+        value={this.state.numberOfGuests}
+        onChange={this.handleInputChange}
+        />
+      </label>
+    </form>
   }
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
+class App extends React.Component {
+  render() {
+    return <div>
+     <NameForm />
+     <EssayForm />
+     <FlavorForm />
+     <Reservation />
+     <input value={42}/>
+    </div>
   }
-  return null;
 }
 
 // ========================================
 
 ReactDOM.render(
-  <Game />,
+  <App/>,
   document.getElementById('root')
-);
-
-
+)

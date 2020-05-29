@@ -1,17 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import "./index.scss";
+import styled from "styled-components";
+
+class MyComponent extends React.Component<{ [x: string]: any }> {
+  render() {
+    return <h1 className={this.props.className}>Hello world!</h1>;
+  }
+}
+
+const StyledLink = styled(MyComponent)`
+  color: red;
+  background-color: yellow;
+`;
 
 class App extends React.Component {
   render() {
     return (
       <>
-        <div className="container">
-          <div className="wrapper">
-            <p>Paragraph</p>
-          </div>
-        </div>
+        <StyledLink />
       </>
     );
   }
@@ -19,4 +26,4 @@ class App extends React.Component {
 
 // ========================================
 
-ReactDOM.render(<App />, document.body);
+ReactDOM.render(<App />, document.getElementById("root"));

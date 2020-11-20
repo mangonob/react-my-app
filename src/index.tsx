@@ -2,11 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import "./index.css";
+import { Playground } from "./pages/palyground";
 
-class App extends React.Component {
-  render() {
-    return <h1>App</h1>;
-  }
+function App() {
+  return <Playground></Playground>;
 }
 
 // ========================================

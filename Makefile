@@ -1,2 +1,2 @@
 all: 
-	npm start
+	yarn start
